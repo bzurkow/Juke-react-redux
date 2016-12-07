@@ -114,9 +114,9 @@
 	
 	var _reactRedux = __webpack_require__(325);
 	
-	var _Stations = __webpack_require__(332);
+	var _StationsContainer = __webpack_require__(333);
 	
-	var _Stations2 = _interopRequireDefault(_Stations);
+	var _StationsContainer2 = _interopRequireDefault(_StationsContainer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -135,6 +135,7 @@
 	    _store2.default.dispatch((0, _albums.receiveAlbums)(albums));
 	    _store2.default.dispatch((0, _artists.receiveArtists)(artists));
 	    _store2.default.dispatch((0, _playlists.receivePlaylists)(playlists));
+	    _store2.default.dispatch((0, _playlists.loadAllSongs)());
 	  });
 	};
 	
@@ -151,26 +152,34 @@
 	  _store2.default.dispatch((0, _playlists.getPlaylistById)(playlistId));
 	};
 	
+	var onStationsEnter = function onStationsEnter(nextRouterState) {
+	  _store2.default.dispatch((0, _playlists.loadAllSongs)());
+	};
+	
 	_reactDom2.default.render(_react2.default.createElement(
-	  _reactRouter.Router,
-	  { history: _reactRouter.hashHistory },
+	  _reactRedux.Provider,
+	  { store: _store2.default },
 	  _react2.default.createElement(
-	    _reactRouter.Route,
-	    { path: '/', component: _App2.default, onEnter: onAppEnter },
-	    _react2.default.createElement(_reactRouter.Route, { path: '/albums', component: _AlbumsContainer2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/albums/:albumId', component: _AlbumContainer2.default, onEnter: onAlbumEnter }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/stations', component: _Stations2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/artists', component: _FilterableArtistsContainer2.default }),
+	    _reactRouter.Router,
+	    { history: _reactRouter.hashHistory },
 	    _react2.default.createElement(
 	      _reactRouter.Route,
-	      { path: '/artists/:artistId', component: _ArtistContainer2.default, onEnter: onArtistEnter },
-	      _react2.default.createElement(_reactRouter.Route, { path: 'albums', component: _Albums2.default }),
-	      _react2.default.createElement(_reactRouter.Route, { path: 'songs', component: _Songs2.default })
-	    ),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/new-playlist', component: _NewPlaylistContainer2.default }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/playlists/:playlistId', component: _PlaylistContainer2.default, onEnter: onPlaylistEnter }),
-	    _react2.default.createElement(_reactRouter.Route, { path: '/lyrics', component: _LyricsContainer2.default }),
-	    _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/albums' })
+	      { path: '/', component: _App2.default, onEnter: onAppEnter },
+	      _react2.default.createElement(_reactRouter.Route, { path: '/albums', component: _AlbumsContainer2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/albums/:albumId', component: _AlbumContainer2.default, onEnter: onAlbumEnter }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/stations', component: _StationsContainer2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/artists', component: _FilterableArtistsContainer2.default }),
+	      _react2.default.createElement(
+	        _reactRouter.Route,
+	        { path: '/artists/:artistId', component: _ArtistContainer2.default, onEnter: onArtistEnter },
+	        _react2.default.createElement(_reactRouter.Route, { path: 'albums', component: _Albums2.default }),
+	        _react2.default.createElement(_reactRouter.Route, { path: 'songs', component: _Songs2.default })
+	      ),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/new-playlist', component: _NewPlaylistContainer2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/playlists/:playlistId', component: _PlaylistContainer2.default, onEnter: onPlaylistEnter }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/lyrics', component: _LyricsContainer2.default }),
+	      _react2.default.createElement(_reactRouter.IndexRedirect, { to: '/albums' })
+	    )
 	  )
 	), document.getElementById('app'));
 
@@ -32108,6 +32117,19 @@
 	        )
 	      )
 	    ),
+	    _react2.default.createElement(
+	      'section',
+	      null,
+	      _react2.default.createElement(
+	        'h4',
+	        { className: 'menu-item' },
+	        _react2.default.createElement(
+	          _reactRouter.Link,
+	          { to: '/stations' },
+	          'STATIONS'
+	        )
+	      )
+	    ),
 	    _react2.default.createElement('hr', null),
 	    _react2.default.createElement(
 	      'section',
@@ -33025,6 +33047,9 @@
 	});
 	
 	exports.default = function (props) {
+		var stations = props.stations;
+		console.dir(props);
+	
 		return _react2.default.createElement(
 			'div',
 			null,
@@ -33036,14 +33061,14 @@
 			_react2.default.createElement(
 				'div',
 				{ className: 'list-group' },
-				DUMMY_STATIONS_DATA.map(function (station) {
+				Object.keys(stations).map(function (station) {
 					return _react2.default.createElement(
 						'div',
-						{ className: 'list-group-item', key: station.name },
+						{ className: 'list-group-item', key: station },
 						_react2.default.createElement(
 							_reactRouter.Link,
 							{ to: '/stations' },
-							station.name
+							station
 						)
 					);
 				})
@@ -33058,8 +33083,56 @@
 	var _reactRouter = __webpack_require__(178);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/***/ },
+/* 333 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
 	
-	var DUMMY_STATIONS_DATA = [{ name: '90s Hip Hop' }, { name: 'Death Metal' }, { name: 'Classical' }];
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(325);
+	
+	var _reactRedux2 = _interopRequireDefault(_reactRedux);
+	
+	var _Stations = __webpack_require__(332);
+	
+	var _Stations2 = _interopRequireDefault(_Stations);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function makeStation(songs) {
+	  console.log(songs);
+	  var stations = {};
+	
+	  songs.forEach(function (song) {
+	    var genre = song.genre;
+	    stations[genre] = stations[genre] || [];
+	    stations[genre].push(song);
+	  });
+	
+	  return stations;
+	}
+	
+	function mapStateToProps(state) {
+	  console.log(state);
+	  return {
+	    stations: makeStation(state.songs)
+	  };
+	}
+	
+	function mapDispatchToProps(dispatch) {
+	  return {};
+	}
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Stations2.default);
 
 /***/ }
 /******/ ]);

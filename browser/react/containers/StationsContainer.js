@@ -13,19 +13,19 @@ import redux from 'react-redux'
       stations[genre] = stations[genre] || [];
       stations[genre].push(song);
     });
-
+    console.log("stations from SC", stations)
     return stations;
   }
 
 
-  function mapStateToProps (state) {
+  function mapStateToProps (state, ownProps) {
     console.log(state)
     return {
       stations: makeStation(state.songs)
     }
   }
 
-  function mapDispatchToProps(dispatch){
+  function mapDispatchToProps(dispatch, ownProps){
     return {}
   }
 

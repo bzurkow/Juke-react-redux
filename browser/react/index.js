@@ -24,7 +24,7 @@ import { Provider } from 'react-redux';
 
 
 import StationsContainer from './containers/StationsContainer'
-
+import StationContainer from './containers/StationContainer'
 const onAppEnter = function () {
 
   Promise.all([
@@ -65,7 +65,8 @@ ReactDOM.render(
       <Route path="/" component={App} onEnter={onAppEnter}>
         <Route path="/albums" component={AlbumsContainer}/>
         <Route path="/albums/:albumId" component={AlbumContainer} onEnter={onAlbumEnter}/>
-        <Route path="/stations" component={StationsContainer} />
+        <Route path="/stations" component={StationsContainer} onEnter={onStationsEnter}/>
+        <Route path ="/stations/:genreName" component={StationContainer} onEnter={onStationsEnter}/>
         <Route path="/artists" component={FilterableArtistsContainer}/>
         <Route path="/artists/:artistId" component={ArtistContainer} onEnter={onArtistEnter}>
           <Route path="albums" component={Albums}/>

@@ -114,9 +114,13 @@
 	
 	var _reactRedux = __webpack_require__(325);
 	
-	var _StationsContainer = __webpack_require__(333);
+	var _StationsContainer = __webpack_require__(332);
 	
 	var _StationsContainer2 = _interopRequireDefault(_StationsContainer);
+	
+	var _StationContainer = __webpack_require__(335);
+	
+	var _StationContainer2 = _interopRequireDefault(_StationContainer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -167,7 +171,8 @@
 	      { path: '/', component: _App2.default, onEnter: onAppEnter },
 	      _react2.default.createElement(_reactRouter.Route, { path: '/albums', component: _AlbumsContainer2.default }),
 	      _react2.default.createElement(_reactRouter.Route, { path: '/albums/:albumId', component: _AlbumContainer2.default, onEnter: onAlbumEnter }),
-	      _react2.default.createElement(_reactRouter.Route, { path: '/stations', component: _StationsContainer2.default }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/stations', component: _StationsContainer2.default, onEnter: onStationsEnter }),
+	      _react2.default.createElement(_reactRouter.Route, { path: '/stations/:genreName', component: _StationContainer2.default, onEnter: onStationsEnter }),
 	      _react2.default.createElement(_reactRouter.Route, { path: '/artists', component: _FilterableArtistsContainer2.default }),
 	      _react2.default.createElement(
 	        _reactRouter.Route,
@@ -33043,12 +33048,62 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(325);
+	
+	var _reactRedux2 = _interopRequireDefault(_reactRedux);
+	
+	var _Stations = __webpack_require__(333);
+	
+	var _Stations2 = _interopRequireDefault(_Stations);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function makeStation(songs) {
+	  console.log(songs);
+	  var stations = {};
+	
+	  songs.forEach(function (song) {
+	    var genre = song.genre;
+	    stations[genre] = stations[genre] || [];
+	    stations[genre].push(song);
+	  });
+	  console.log("stations from SC", stations);
+	  return stations;
+	}
+	
+	function mapStateToProps(state, ownProps) {
+	  console.log(state);
+	  return {
+	    stations: makeStation(state.songs)
+	  };
+	}
+	
+	function mapDispatchToProps(dispatch, ownProps) {
+	  return {};
+	}
+	
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Stations2.default);
+
+/***/ },
+/* 333 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
 	
 	exports.default = function (props) {
 		var stations = props.stations;
-		console.dir(props);
+		console.log("these are the sations", "\n", stations);
 	
 		return _react2.default.createElement(
 			'div',
@@ -33061,14 +33116,14 @@
 			_react2.default.createElement(
 				'div',
 				{ className: 'list-group' },
-				Object.keys(stations).map(function (station) {
+				Object.keys(stations).map(function (genre) {
 					return _react2.default.createElement(
 						'div',
-						{ className: 'list-group-item', key: station },
+						{ className: 'list-group-item', key: genre },
 						_react2.default.createElement(
 							_reactRouter.Link,
-							{ to: '/stations' },
-							station
+							{ to: '/stations/' + genre },
+							genre
 						)
 					);
 				})
@@ -33085,7 +33140,71 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ },
-/* 333 */
+/* 334 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	exports.default = function (props) {
+		var routeGenre = props.routeParams.genreName;
+		var stations = props.stations;
+		return _react2.default.createElement(
+			'div',
+			null,
+			_react2.default.createElement(
+				'h3',
+				null,
+				routeGenre
+			),
+			_react2.default.createElement(
+				'div',
+				{ className: 'list-group' },
+				Object.keys(stations).filter(function (genre) {
+					return genre === routeGenre;
+				}).map(function (genre) {
+					return _react2.default.createElement(
+						'div',
+						{ className: 'list-group-item', key: genre },
+						_react2.default.createElement(
+							_reactRouter.Link,
+							{ to: '/stations/' + genre },
+							genre
+						)
+					);
+				})
+			)
+		);
+	};
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRouter = __webpack_require__(178);
+	
+	var _Songs = __webpack_require__(275);
+	
+	var _Songs2 = _interopRequireDefault(_Songs);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var DUMMY_GENRE_NAME = 'Jazz';
+	var DUMMY_SONGS = [{
+		id: 1,
+		name: "A Love Supreme",
+		genre: "Jazz",
+		artists: [{ name: "John Coltrane" }]
+	}];
+	var DUMMY_CURRENT_SONG = {};
+	var DUMMY_IS_PLAYING = false;
+	var DUMMY_TOGGLE_ONE = function DUMMY_TOGGLE_ONE() {};
+
+/***/ },
+/* 335 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33102,37 +33221,23 @@
 	
 	var _reactRedux2 = _interopRequireDefault(_reactRedux);
 	
-	var _Stations = __webpack_require__(332);
+	var _Station = __webpack_require__(334);
 	
-	var _Stations2 = _interopRequireDefault(_Stations);
+	var _Station2 = _interopRequireDefault(_Station);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	function makeStation(songs) {
-	  console.log(songs);
-	  var stations = {};
-	
-	  songs.forEach(function (song) {
-	    var genre = song.genre;
-	    stations[genre] = stations[genre] || [];
-	    stations[genre].push(song);
-	  });
-	
-	  return stations;
-	}
-	
-	function mapStateToProps(state) {
-	  console.log(state);
-	  return {
-	    stations: makeStation(state.songs)
-	  };
-	}
-	
-	function mapDispatchToProps(dispatch) {
+	var mapStateToProps = function mapStateToProps(state, ownProps) {
 	  return {};
-	}
+	};
 	
-	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Stations2.default);
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+	  return {};
+	};
+	
+	var StationContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Station2.default);
+	
+	exports.default = StationContainer;
 
 /***/ }
 /******/ ]);

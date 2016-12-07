@@ -23,6 +23,7 @@ export default function (props) {
           <Link to='/lyrics'>LYRICS</Link>
         </h4>
       </section>
+  
       <hr />
       <section>
         <h4 className="text-muted">PLAYLISTS</h4>

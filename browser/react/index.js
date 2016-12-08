@@ -25,6 +25,7 @@ import { Provider } from 'react-redux';
 
 import StationsContainer from './containers/StationsContainer'
 import StationContainer from './containers/StationContainer'
+import SongsContainer from './containers/SongsContainer'
 const onAppEnter = function () {
 
   Promise.all([
@@ -46,6 +47,7 @@ const onAlbumEnter = function (nextRouterState) {
   const albumId = nextRouterState.params.albumId;
   store.dispatch(getAlbumById(albumId));
 };
+
 const onArtistEnter = function (nextRouterState) {
   const artistId = nextRouterState.params.artistId;
   store.dispatch(getArtistById(artistId));
@@ -70,7 +72,7 @@ ReactDOM.render(
         <Route path="/artists" component={FilterableArtistsContainer}/>
         <Route path="/artists/:artistId" component={ArtistContainer} onEnter={onArtistEnter}>
           <Route path="albums" component={Albums}/>
-          <Route path="songs" component={Songs}/>
+          <Route path="songs" component={SongsContainer}/>
         </Route>
         <Route path="/new-playlist" component={NewPlaylistContainer}/>
         <Route path="/playlists/:playlistId" component={PlaylistContainer} onEnter={onPlaylistEnter}/>

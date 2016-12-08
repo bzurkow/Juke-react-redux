@@ -118,9 +118,13 @@
 	
 	var _StationsContainer2 = _interopRequireDefault(_StationsContainer);
 	
-	var _StationContainer = __webpack_require__(335);
+	var _StationContainer = __webpack_require__(334);
 	
 	var _StationContainer2 = _interopRequireDefault(_StationContainer);
+	
+	var _SongsContainer = __webpack_require__(336);
+	
+	var _SongsContainer2 = _interopRequireDefault(_SongsContainer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -147,6 +151,7 @@
 	  var albumId = nextRouterState.params.albumId;
 	  _store2.default.dispatch((0, _albums.getAlbumById)(albumId));
 	};
+	
 	var onArtistEnter = function onArtistEnter(nextRouterState) {
 	  var artistId = nextRouterState.params.artistId;
 	  _store2.default.dispatch((0, _artists.getArtistById)(artistId));
@@ -178,7 +183,7 @@
 	        _reactRouter.Route,
 	        { path: '/artists/:artistId', component: _ArtistContainer2.default, onEnter: onArtistEnter },
 	        _react2.default.createElement(_reactRouter.Route, { path: 'albums', component: _Albums2.default }),
-	        _react2.default.createElement(_reactRouter.Route, { path: 'songs', component: _Songs2.default })
+	        _react2.default.createElement(_reactRouter.Route, { path: 'songs', component: _SongsContainer2.default })
 	      ),
 	      _react2.default.createElement(_reactRouter.Route, { path: '/new-playlist', component: _NewPlaylistContainer2.default }),
 	      _react2.default.createElement(_reactRouter.Route, { path: '/playlists/:playlistId', component: _PlaylistContainer2.default, onEnter: onPlaylistEnter }),
@@ -29075,11 +29080,7 @@
 	      ),
 	      _react2.default.createElement('img', { src: album.imageUrl, className: 'img-thumbnail' })
 	    ),
-	    _react2.default.createElement(_Songs2.default, {
-	      songs: album.songs,
-	      currentSong: currentSong,
-	      isPlaying: isPlaying,
-	      toggleOne: toggleOne })
+	    _react2.default.createElement(_SongsContainer2.default, { songs: album.songs })
 	  );
 	};
 	
@@ -29090,6 +29091,10 @@
 	var _Songs = __webpack_require__(275);
 	
 	var _Songs2 = _interopRequireDefault(_Songs);
+	
+	var _SongsContainer = __webpack_require__(336);
+	
+	var _SongsContainer2 = _interopRequireDefault(_SongsContainer);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29106,9 +29111,11 @@
 	exports.default = function (props) {
 	
 	  var songs = props.songs;
+	  console.log('SONGS', songs);
 	  var currentSong = props.currentSong;
 	  var isPlaying = props.isPlaying;
 	  var toggle = props.toggleOne;
+	  console.log('current song', currentSong);
 	
 	  return _react2.default.createElement(
 	    'table',
@@ -33066,7 +33073,6 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function makeStation(songs) {
-	  console.log(songs);
 	  var stations = {};
 	
 	  songs.forEach(function (song) {
@@ -33074,12 +33080,10 @@
 	    stations[genre] = stations[genre] || [];
 	    stations[genre].push(song);
 	  });
-	  console.log("stations from SC", stations);
 	  return stations;
 	}
 	
 	function mapStateToProps(state, ownProps) {
-	  console.log(state);
 	  return {
 	    stations: makeStation(state.songs)
 	  };
@@ -33146,38 +33150,68 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-		value: true
+	  value: true
 	});
 	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _reactRedux = __webpack_require__(325);
+	
+	var _reactRedux2 = _interopRequireDefault(_reactRedux);
+	
+	var _Station = __webpack_require__(335);
+	
+	var _Station2 = _interopRequireDefault(_Station);
+	
+	var _utils = __webpack_require__(261);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	var mapStateToProps = function mapStateToProps(state, ownProps) {
+	  console.log('STATE', state);
+	  var stationSongs = state.songs.filter(function (song) {
+	    return song.genre === ownProps.params.genreName;
+	  }).map(_utils.convertSong);
+	
+	  return { stationSongs: stationSongs };
+	};
+	
+	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
+	  return {};
+	};
+	
+	var StationContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Station2.default);
+	
+	exports.default = StationContainer;
+
+/***/ },
+/* 335 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	
 	exports.default = function (props) {
-		var routeGenre = props.routeParams.genreName;
-		var stations = props.stations;
-		return _react2.default.createElement(
-			'div',
-			null,
-			_react2.default.createElement(
-				'h3',
-				null,
-				routeGenre
-			),
-			_react2.default.createElement(
-				'div',
-				{ className: 'list-group' },
-				Object.keys(stations).filter(function (genre) {
-					return genre === routeGenre;
-				}).map(function (genre) {
-					return _react2.default.createElement(
-						'div',
-						{ className: 'list-group-item', key: genre },
-						_react2.default.createElement(
-							_reactRouter.Link,
-							{ to: '/stations/' + genre },
-							genre
-						)
-					);
-				})
-			)
-		);
+	  var stationSongs = props.stationSongs;
+	  var routeGenre = props.params.genreName;
+	
+	  return _react2.default.createElement(
+	    'div',
+	    null,
+	    _react2.default.createElement(
+	      'h3',
+	      null,
+	      routeGenre
+	    ),
+	    _react2.default.createElement(_SongsContainer2.default, _extends({}, props, { songs: stationSongs }))
+	  );
 	};
 	
 	var _react = __webpack_require__(1);
@@ -33186,25 +33220,47 @@
 	
 	var _reactRouter = __webpack_require__(178);
 	
-	var _Songs = __webpack_require__(275);
+	var _SongsContainer = __webpack_require__(336);
 	
-	var _Songs2 = _interopRequireDefault(_Songs);
+	var _SongsContainer2 = _interopRequireDefault(_SongsContainer);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var DUMMY_GENRE_NAME = 'Jazz';
 	var DUMMY_SONGS = [{
-		id: 1,
-		name: "A Love Supreme",
-		genre: "Jazz",
-		artists: [{ name: "John Coltrane" }]
+	  id: 1,
+	  name: "A Love Supreme",
+	  genre: "Jazz",
+	  artists: [{ name: "John Coltrane" }]
 	}];
 	var DUMMY_CURRENT_SONG = {};
 	var DUMMY_IS_PLAYING = false;
+	
+	
+	// {
+	//   stationSongs.map(song => {
+	//     return (
+	//       <div className="list-group-item" key={song.id}>
+	//         {song.name}
+	//       </div>
+	//     )
+	//   })
+	// }
+	
+	
+	// Object.keys(stations).filter(genre => {
+	//   return genre===routeGenre
+	// }).map(genre => {
+	//   return (
+	//     <div className="list-group-item" key={genre}>
+	//       <Link to={`/stations/${genre}`}>{genre}</Link>
+	//     </div>
+	//   );
+	// })
 	var DUMMY_TOGGLE_ONE = function DUMMY_TOGGLE_ONE() {};
 
 /***/ },
-/* 335 */
+/* 336 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -33217,27 +33273,35 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _Songs = __webpack_require__(275);
+	
+	var _Songs2 = _interopRequireDefault(_Songs);
+	
 	var _reactRedux = __webpack_require__(325);
 	
-	var _reactRedux2 = _interopRequireDefault(_reactRedux);
-	
-	var _Station = __webpack_require__(334);
-	
-	var _Station2 = _interopRequireDefault(_Station);
+	var _player = __webpack_require__(276);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	var mapStateToProps = function mapStateToProps(state, ownProps) {
-	  return {};
+	  return {
+	    songs: ownProps.songs,
+	    currentSong: state.player.currentSong,
+	    isPlaying: state.player.isPlaying
+	  };
 	};
 	
-	var mapDispatchToProps = function mapDispatchToProps(dispatch, ownProps) {
-	  return {};
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    toggleOne: function toggleOne(song, list) {
+	      return dispatch((0, _player.toggleSong)(song, list));
+	    }
+	  };
 	};
 	
-	var StationContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Station2.default);
+	var SongsContainer = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(_Songs2.default);
 	
-	exports.default = StationContainer;
+	exports.default = SongsContainer;
 
 /***/ }
 /******/ ]);

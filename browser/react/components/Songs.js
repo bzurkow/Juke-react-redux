@@ -3,9 +3,11 @@ import React from 'react';
 export default function (props) {
 
   const songs = props.songs;
+  console.log('SONGS', songs)
   const currentSong = props.currentSong;
   const isPlaying = props.isPlaying;
   const toggle = props.toggleOne;
+  console.log('current song', currentSong)
 
   return (
     <table className='table'>
